@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Foodie-Hub</title>
+    <link rel="icon" type="image/logo" href="images/logo gemini.png">
     <link rel="stylesheet" href="style.css" />
     <link
       rel="stylesheet"
@@ -13,13 +14,14 @@
   <body>
     <!---- HEADER---->
 
-    <header class="header">
-      <h1 class="header_title">Foodie<span>Hub</span></h1>
+    <header class="header" >
+    <img src="images/logo gemini.png" style=" height: 100px;   /* Adjust logo height */
+      width: auto;">
       <ul class="header_menus">
-        <li><a href="#home"> home</a></li>
+        <li><a href="#home"> Home</a></li>
         <li><a href="#menu">Menus</a></li>
         <li><a href="#about">About</a></li>
-        <li><a href="#service">Service</a></li>
+         <li><a href="#service">Service</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
     </header>
@@ -28,28 +30,41 @@
     
           
         
-      </div><section class="section-home section-menu">
-      <div class="section-home-content">
-        <h1 class="section-home-title">
-          Where <span> Every Bite</span> Tells a Story
-        </h1>
-        <div class="section-home-button">
-          <button class="contact-button">Contact</button>
-          <button class="explore-button">Explore</button>
-        </div>
-      </div>
-      <img class="section-home-image" src="images/burger.png" alt="burger" />
-    </section>
+     <section class="hero" id="home">
+  <div class="hero-content">
+    <h1 class="hero-title">
+      Where Flavor Meets <span>Emotion</span>, <br>
+      Meals Become <span>Moments</span>
+    </h1>
+    <h3 class="hero-subtitle">
+      Every Plate <span>A Celebration of Taste</span>
+    </h3>
+
+    <div class="hero-buttons">
+      <a href="#menu" class="hero-btn explore">🍽 Explore Our Menu</a>
+      <a href="#contact" class="hero-btn contact">📞 Contact Us</a>
+    </div>
+  </div>
+
+  <div class="hero-image">
+    <img src="images/Gemini_Generated_Image_yemxhnyemxhnyemx.png" alt="Colorful food platter showcasing best dishes for restaurant homepage" />
+  </div>
+</section>
 
     <section class="section-menu" id="menu">
       <h1 class="section-title">Food <span>Corner</span></h1>
-      <article class="section-desk">
+      <article class="section-desk" style="text-align: center;">
         "Good food makes happy moments!
 From tasty snacks to sweet desserts,
 every bite will make you smile."
       </article>
 
-    </section>
+</section>
+
+ <!----menu cards ---->
+
+
+
 <div class="row">
     <div class="column">
       <div class="card">
@@ -115,17 +130,202 @@ every bite will make you smile."
       </div>
     </div>
    </div>
+   <div class="row"style="padding-top: 30px;">
+    <div class="column">
+      <div class="card">
+        <img src="images/sanwich.png" alt="Sandwich">
+        <div class="card-content">
+          <h3>Grilled Sandwich</h3>
+          <p>Toasted bread stuffed with veggies & cheese.</p>
+          <div class="rating">⭐⭐⭐⭐⭐</div>
+          <div class="price">₹149</div>
+          <a href="#" class="buy-btn">Buy Now</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="column">
+      <div class="card">
+        <img src="images/biriyani.png" alt="Biryani">
+        <div class="card-content">
+          <h3>Chicken Biryani</h3>
+          <p>Spicy rice cooked with tender chicken pieces.</p>
+          <div class="rating">⭐⭐⭐⭐☆</div>
+          <div class="price">₹299</div>
+          <a href="#" class="buy-btn">Buy Now</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="column">
+      <div class="card">
+        <img src="images/masaladosa.jpg" alt="Dosa">
+        <div class="card-content">
+          <h3>Masala Dosa</h3>
+          <p>Crispy dosa stuffed with spicy potato filling.</p>
+          <div class="rating">⭐⭐⭐☆☆</div>
+          <div class="price">₹99</div>
+          <a href="#" class="buy-btn">Buy Now</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="column">
+      <div class="card">
+        <img src="images/milkshake.png" alt="Milkshake">
+        <div class="card-content">
+          <h3>Chocolate Milkshake</h3>
+          <p>Refreshing drink with rich chocolate flavor.</p>
+          <div class="rating">⭐⭐⭐⭐⭐</div>
+          <div class="price">₹129</div>
+          <a href="#" class="buy-btn">Buy Now</a>
+        </div>
+      </div>
+    </div>
+    <div class="column">
+      <div class="card">
+        <img src="images/chicku.png" alt="chicku juice">
+        <div class="card-content">
+          <h3>Chickku Juice</h3>
+          <p>Sweet and creamy juice made from fresh chikku.</p>
+          <div class="rating">⭐⭐⭐⭐</div>
+          <div class="price">₹100</div>
+          <a href="#" class="buy-btn">Buy Now</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
     <!---  SECTION: ABOUT-->
-    <section id="about" class="section-about section -menu"></section>
+    <section id="about" class="section-about">
+     
+<div class="section-about-content">
+  <h1 class="section-title" style="padding-top: 50px;  padding-bottom: 20px ;" >About <span>Us</span></h1>
+</div>
+ 
+<p style="text-align: center; ">At Foodie-Hub, we believe food is happiness.</p>
+<p  style="text-align: center; ">Our mission is to serve fresh, tasty, and affordable dishes that make every bite special. <br> Us to experience flavors that feel like home!</p>
+
+
+<p> 
+  <h2 style="text-align: center;  color: #e65100; ;">3+  Years of Experience</h2>
+  <h2 style="text-align: center;  color: #b71c1c;">🍽️ Our 15 Best Foods</h2><br>
+</p>
+</section>
+
     <!---   END SECTION: ABOUT-->
     <!----SECTION SERVICE--->
-    <section id="service" class="section-service"></section>
+    <<section class="services" id="service">
+  <h2>Our Services</h2>
+  <div class="service-cards">
+    <div class="service-card">
+      <i class='bx bx-bowl-hot'></i>
+      <h3>Dine In Service</h3>
+      <p>Enjoy a delightful dine-in experience with freshly prepared meals in a cozy environment.</p>
+    </div>
+
+    <div class="service-card">
+      <i class='bx bx-package'></i>
+      <h3>Delivery</h3>
+      <p>Get your favorite meals delivered hot and fresh to your doorstep. Fast and reliable service.</p>
+    </div>
+
+    <div class="service-card">
+      <i class='bx bx-calendar-event'></i>
+      <h3>Event & Catering</h3>
+      <p>We provide catering for parties, weddings, and corporate events. Delicious food tailored for your event.</p>
+    </div>
+  </div>
+</section>
+
+
+
     <!---  SECTION: END SERVICE-->
-    <section id="contact" class="section-contact section -menu"></section>
-    <!---  SECTION: END CONTACT-->
+   <section id="contact" class="contact-section">
+  <div class="container">
+    <h2>Contact Us</h2>
+    <p style="padding-bottom: 20px;">Have questions? We'd love to hear from you! Reach out to us through any of the methods below.</p>
+    
+    <div class="contact-cards">
+      <div class="contact-card">
+        <i class='bx bx-map'></i>
+        <h3>Our Address</h3>
+        <p>123 Food Street, Culinary City, Country</p>
+      </div>
+      <div class="contact-card">
+        <i class='bx bx-phone'></i>
+        <h3>Call Us</h3>
+        <p>+91 **********</p>
+      </div>
+      <div class="contact-card">
+        <i class='bx bx-envelope'></i>
+        <h3>Email Us</h3>
+        <p>info@yourfoodhub.com</p>
+      </div>
+    </div>
+
+    <div class="contact-form">
+      <form action="#" method="POST">
+        <input type="text" name="name" placeholder="Your Name" required>
+        <input type="email" name="email" placeholder="Your Email" required>
+        <input type="text" name="subject" placeholder="Subject" required>
+        <textarea name="message" rows="5" placeholder="Your Message" required></textarea>
+        <button type="submit">Send Message</button>
+      </form>
+    </div>
+  </div>
+</section>
+
 
     <!-----FOOTER---->
-    <footer class="footer"></footer>
+    <footer class="footer-section">
+  <div class="container">
+    <div class="footer-content">
+      
+      <!-- About Section -->
+      <div class="footer-about">
+        <h3>YourFoodHub</h3>
+        <p>Delicious food made with love and served with care. Come and enjoy the best flavors in town!</p>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="footer-links">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="#home">Home</a></li>
+          <li><a href="#menu">Menu</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact Info -->
+      <div class="footer-contact">
+        <h3>Contact</h3>
+        <p><i class='bx bx-map'></i> 123 Food Street, name City</p>
+        <p><i class='bx bx-phone'></i> +91 00000000</p>
+        <p><i class='bx bx-envelope'></i> info@yourfoodhub.com</p>
+      </div>
+
+      <!-- Social Media -->
+      <div class="footer-social">
+        <h3>Follow Us</h3>
+        <div class="social-icons">
+          <a href="#"><i class='bx bxl-facebook'></i></a>
+          <a href="#"><i class='bx bxl-instagram'></i></a>
+          <a href="#"><i class='bx bxl-twitter'></i></a>
+          <a href="#"><i class='bx bxl-youtube'></i></a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; 2025 YourFoodHub. All Rights Reserved.</p>
+    </div>
+  </div>
+</footer>
+
     <!---END FOOTER-->
   </body>
 </html>
