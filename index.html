@@ -24,6 +24,10 @@
          <li><a href="#service">Service</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
+      <div class="header_menu-toggle">
+        <i class='bxr  bx-menu'  ></i> 
+        <i class='bxr  bx-x'  ></i> 
+      </div>
     </header>
 
     <!---SECTION:HOME--->
@@ -40,9 +44,9 @@
       Every Plate <span>A Celebration of Taste</span>
     </h3>
 
-    <div class="hero-buttons">
-      <a href="#menu" class="hero-btn explore">🍽 Explore Our Menu</a>
-      <a href="#contact" class="hero-btn contact">📞 Contact Us</a>
+    <div class="hero-buttons" >
+      <a href="#menu" class="hero-btn explore" >🍽 Explore Our Menu</a >
+      <a href="#contact" class="hero-btn contact" >📞 Contact Us</a>
     </div>
   </div>
 
@@ -241,37 +245,41 @@ every bite will make you smile."
 
 
     <!---  SECTION: END SERVICE-->
-   <section id="contact" class="contact-section">
+  <section id="contact" class="contact-section">
   <div class="container">
     <h2>Contact Us</h2>
     <p style="padding-bottom: 20px;">Have questions? We'd love to hear from you! Reach out to us through any of the methods below.</p>
     
-    <div class="contact-cards">
-      <div class="contact-card">
-        <i class='bx bx-map'></i>
-        <h3>Our Address</h3>
-        <p>123 Food Street, Culinary City, Country</p>
+    <div class="contact-wrapper">
+      <!-- Left Side - Contact Info -->
+      <div class="contact-cards">
+        <div class="contact-card">
+          <i class='bx bx-map'></i>
+          <h3>Our Address</h3>
+          <p>123 Food Street, Culinary City, Country</p>
+        </div>
+        <div class="contact-card">
+          <i class='bx bx-phone'></i>
+          <h3>Call Us</h3>
+          <p>+91 **********</p>
+        </div>
+        <div class="contact-card">
+          <i class='bx bx-envelope'></i>
+          <h3>Email Us</h3>
+          <p>info@yourfoodhub.com</p>
+        </div>
       </div>
-      <div class="contact-card">
-        <i class='bx bx-phone'></i>
-        <h3>Call Us</h3>
-        <p>+91 **********</p>
-      </div>
-      <div class="contact-card">
-        <i class='bx bx-envelope'></i>
-        <h3>Email Us</h3>
-        <p>info@yourfoodhub.com</p>
-      </div>
-    </div>
 
-    <div class="contact-form">
-      <form action="#" method="POST">
-        <input type="text" name="name" placeholder="Your Name" required>
-        <input type="email" name="email" placeholder="Your Email" required>
-        <input type="text" name="subject" placeholder="Subject" required>
-        <textarea name="message" rows="5" placeholder="Your Message" required></textarea>
-        <button type="submit">Send Message</button>
-      </form>
+      <!-- Right Side - Contact Form -->
+      <div class="contact-form">
+        <form action="#" method="POST">
+          <input type="text" name="name" placeholder="Your Name" required>
+          <input type="email" name="email" placeholder="Your Email" required>
+          <input type="text" name="subject" placeholder="Subject" required>
+          <textarea name="message" rows="5" placeholder="Your Message" required></textarea>
+          <button type="submit">Send Message</button>
+        </form>
+      </div>
     </div>
   </div>
 </section>
@@ -328,4 +336,47 @@ every bite will make you smile."
 
     <!---END FOOTER-->
   </body>
+
+
+
+
+
+
+<script>
+  const headermenutoggle=document.querySelector('.header_menu-toggle');
+const headermenus=document.querySelector('.header_menus');
+
+
+  headermenutoggle.addEventListener('click',()=>{
+    headermenus.classList.toggle('active');
+  })
+
+
+
+// ==========================
+// Contact Form Submit
+// ==========================
+document.querySelector(".contact-form").addEventListener("submit", (e) => {
+  e.preventDefault();
+  alert("✅ Thank you! Your message has been sent successfully.");
+});
+
+// ==========================
+// Buy Buttons → WhatsApp Order
+// ==========================
+document.querySelectorAll(".order-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const foodName = btn.parentElement.querySelector("h3").innerText;
+    const phone = "*********"; // Replace with your WhatsApp number (without + sign)
+    const message = `Hello! I would like to order: ${foodName}`;
+    const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+    window.open(url, "_blank");
+  });
+});
+
+
+
+</script>
+
+
 </html>

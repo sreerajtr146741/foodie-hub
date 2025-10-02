@@ -131,11 +131,13 @@ html {
   text-decoration: none;
   transition: all 0.3s ease;
   margin-right: 15px;
+  
 }
 
 .hero-btn.explore {
   background: #e63946;
   color: #fff;
+  
 }
 
 .hero-btn.explore:hover {
@@ -531,4 +533,61 @@ html {
   background: linear-gradient(135deg, #e14a32, #af2d0b);
   transform: translateY(-2px);
   box-shadow: 0 6px 15px rgba(225, 74, 50, 0.4);
+}
+.footer-section {
+  background-color: blanchedalmondS;
+}
+.header_menu-toggle{
+  display: none;
+}
+
+@media screen and (max-width: 768px) {
+  .header_menu-toggle {
+    display: block;
+    font-size: 2rem;
+    cursor: pointer;
+  }
+  .header_menu-toggle .bx-x{
+    display: none;
+  }
+
+  .header_menus {
+    position: absolute;
+    top: 100px;
+    background: linear-gradient(to right, white, var(--border-primary-color));
+    flex-direction: column;
+    width: 100%;
+    left: 0;
+    padding-inline-start: 5%;
+    transition: 300ms ease;
+    height: 0;
+    overflow: hidden;
+  }
+
+  .header_menus.active {
+    height: 300px;
+    padding-block: 24px;
+  }
+
+  .header_menus.active ~ .header_menu-toggle .bx-menu {
+    display: none;
+  }
+  .header_menus.active ~ .header_menu-toggle .bx-x {
+    display: block;
+  }
+}
+
+  /*section start*/
+  .hero {
+    flex-direction: column-reverse;
+    justify-content: center;
+  }
+  .hero-image {
+    max-width: 250 px;
+  }
+  .hero-title .hero-subtitle {
+    font-size: 2rem;
+    width: 100%;
+  }
+  /*section end*/
 }
