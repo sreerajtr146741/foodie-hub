@@ -2,14 +2,18 @@
 
 namespace App\Mail;
 
-use App\Models\Booking;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class BookingConfirmation extends Mailable
+use Illuminate\Mail\Mailables\Attachment;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\Booking;
+
+class BookingInvoice extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -23,19 +27,22 @@ class BookingConfirmation extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Table Booking Confirmation & Invoice - Food Court',
+            subject: 'Dining Completed - Your Invoice',
         );
     }
 
     public function content(): Content
     {
         return new Content(
-            view: 'emails.bookings.confirmation',
+            view: 'emails.bookings.invoice',
         );
     }
 
     public function attachments(): array
     {
-        return [];
+        return [
+            Attachment::fromData(fn () => Pdf::loadView('pdfs.invoice', ['booking' => $this->booking])->output(), 'Invoice-' . $this->booking->id . '.pdf')
+                ->withMime('application/pdf'),
+        ];
     }
 }

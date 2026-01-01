@@ -29,7 +29,15 @@
                 
                 <div class="mt-8">
                     <div class="flex items-baseline gap-4 mb-6">
-                        <span class="text-4xl font-bold text-orange-600">₹{{ $food->price }}</span>
+                        @if($food->category->discount > 0)
+                            <span class="text-4xl font-bold text-orange-600">
+                                ₹{{ number_format($food->price - ($food->price * $food->category->discount / 100), 2) }}
+                            </span>
+                            <span class="text-xl text-gray-500 line-through">₹{{ $food->price }}</span>
+                            <span class="bg-green-100 text-green-800 text-sm font-semibold px-2 py-1 rounded">{{ $food->category->discount }}% OFF</span>
+                        @else
+                            <span class="text-4xl font-bold text-orange-600">₹{{ $food->price }}</span>
+                        @endif
                     </div>
                     
                     @auth

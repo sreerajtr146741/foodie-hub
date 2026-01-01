@@ -50,6 +50,15 @@ class BookingController extends Controller
                         Log::error('Booking Confirm Email Error: ' . $e->getMessage());
                     }
                 }
+
+                // Send Invoice email when completed
+                if ($request->status === 'completed') {
+                    try {
+                        Mail::to($booking->email)->send(new \App\Mail\BookingInvoice($booking));
+                    } catch (\Exception $e) {
+                        Log::error('Booking Invoice Email Error: ' . $e->getMessage());
+                    }
+                }
                 
                 return back()->with('success', 'Booking status updated successfully.');
             }

@@ -50,7 +50,19 @@
                     </div>
                     <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ $food->description }}</p>
                     <div class="flex items-center justify-between">
-                        <span class="text-2xl font-bold text-orange-600">₹{{ $food->price }}</span>
+                        @if($food->category->discount > 0)
+                            <div class="flex flex-col">
+                                <div class="flex items-center gap-2">
+                                     <span class="text-2xl font-bold text-orange-600">
+                                        ₹{{ number_format($food->price - ($food->price * $food->category->discount / 100), 2) }}
+                                    </span>
+                                    <span class="text-sm text-gray-500 line-through">₹{{ $food->price }}</span>
+                                </div>
+                                <span class="text-xs text-green-600 font-bold self-start">{{ $food->category->discount }}% OFF</span>
+                            </div>
+                        @else
+                            <span class="text-2xl font-bold text-orange-600">₹{{ $food->price }}</span>
+                        @endif
                     </div>
                 </div>
             </a>
