@@ -40,12 +40,14 @@
             </p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             @foreach($featuredFoods as $food)
-            <a href="{{ route('food.details', $food) }}" class="block bg-white rounded-lg shadow-lg overflow-hidden border border-gray-100 transition transform hover:scale-105 cursor-pointer">
+            <a href="{{ route('food.details', $food) }}" class="block bg-white rounded-lg shadow-lg overflow-hidden border border-gray-100 transition transform hover:-translate-y-1 hover:shadow-xl cursor-pointer">
                 <img src="{{ $food->image ? asset('storage/' . $food->image) : 'https://placehold.co/400x300' }}" alt="{{ $food->name }}" class="w-full h-48 object-cover">
-                <div class="p-6">
-                    <h3 class="text-xl font-bold text-gray-900 mb-2">{{ $food->name }}</h3>
+                <div class="p-4">
+                    <div class="flex justify-between items-start mb-2">
+                         <h3 class="text-lg font-bold text-gray-900">{{ $food->name }}</h3>
+                    </div>
                     <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ $food->description }}</p>
                     <div class="flex items-center justify-between">
                         <span class="text-2xl font-bold text-orange-600">₹{{ $food->price }}</span>

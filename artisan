@@ -1,0 +1,20 @@
+#!/usr/bin/env php
+<?php
+
+/**
+ * Proxy to the actual artisan file in the subdirectory.
+ * This allows running 'php artisan' from the parent directory.
+ */
+
+$projectDir = __DIR__ . '/foodie-hub-laravel';
+
+if (file_exists($projectDir . '/artisan')) {
+    // Change directory to the project root so paths (autoload, .env, etc.) resolve correctly
+    chdir($projectDir);
+    
+    // Delegate to the original artisan
+    require $projectDir . '/artisan';
+} else {
+    echo "Could not find foodie-hub-laravel/artisan.\n";
+    exit(1);
+}
