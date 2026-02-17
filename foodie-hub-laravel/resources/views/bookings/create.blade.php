@@ -13,6 +13,22 @@
         <form action="{{ route('booking.store') }}" method="POST" class="p-6 space-y-8" x-data="bookingForm()">
             @csrf
 
+            <div class="flex items-center justify-between bg-blue-50 border border-blue-200 p-4 rounded-lg mb-4">
+                <div class="flex items-center">
+                    <svg class="h-5 w-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span class="text-sm text-blue-800">Note: We reserve {{ \App\Models\RestaurantSetting::getValue('online_tables_count', 5) }} tables for online bookings per time slot.</span>
+                </div>
+                <a href="{{ route('admin.tables.index') }}" class="text-xs text-blue-600 hover:underline">Admin: Setup Tables</a>
+            </div>
+
+            @if (session('error'))
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                    {{ session('error') }}
+                </div>
+            @endif
+
             @if ($errors->any())
                 <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
                     <ul class="list-disc list-inside">

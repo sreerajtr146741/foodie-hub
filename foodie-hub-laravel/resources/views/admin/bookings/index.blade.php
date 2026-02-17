@@ -58,8 +58,17 @@
                                 <form method="POST" action="{{ route('admin.bookings.updateStatus', $booking->id) }}" class="flex items-center gap-2">
                                     @csrf
                                     @method('PATCH')
-                                    <input type="text" name="table_number" value="{{ $booking->table_number }}" placeholder="#" class="w-16 px-2 py-1 border rounded text-sm">
-                                    <button type="submit" name="action" value="assign_table" class="text-xs text-blue-600 hover:text-blue-800">Assign</button>
+                                    <select name="table_number" onchange="this.form.submit()" class="w-24 px-2 py-1 border rounded text-xs">
+                                        <option value="">Select Table</option>
+                                        @foreach($availableTables as $table)
+                                            <option value="{{ $table->table_number }}" {{ $booking->table_number == $table->table_number ? 'selected' : '' }}>
+                                                {{ $table->table_number }} ({{ $table->type }})
+                                            </option>
+                                        @endforeach
+                                        @if($booking->table_number && !$availableTables->contains('table_number', $booking->table_number))
+                                            <option value="{{ $booking->table_number }}" selected>{{ $booking->table_number }}</option>
+                                        @endif
+                                    </select>
                                 </form>
                             </td>
                             <td class="px-6 py-4">

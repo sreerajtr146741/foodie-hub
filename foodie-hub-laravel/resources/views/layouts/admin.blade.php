@@ -33,6 +33,9 @@
                 <a href="{{ route('admin.bookings.index') }}" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-800 {{ request()->routeIs('admin.bookings.*') ? 'bg-gray-800 text-orange-500' : '' }}">
                     Table Bookings
                 </a>
+                <a href="{{ route('admin.tables.index') }}" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-800 {{ request()->routeIs('admin.tables.*') ? 'bg-gray-800 text-orange-500' : '' }}">
+                    Manage Tables
+                </a>
                 <a href="{{ route('admin.contact.messages.index') }}" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-800 {{ request()->routeIs('admin.contact.messages.*') ? 'bg-gray-800 text-orange-500' : '' }}">
                     Contact Messages
                 </a>

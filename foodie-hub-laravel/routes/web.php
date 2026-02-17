@@ -89,6 +89,13 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::patch('/bookings/{id}/status', [AdminBookingController::class, 'updateStatus'])->name('bookings.updateStatus');
     Route::delete('/bookings/{id}', [AdminBookingController::class, 'destroy'])->name('bookings.destroy');
     
+    // Tables
+    Route::get('/tables', [App\Http\Controllers\Admin\TableController::class, 'index'])->name('tables.index');
+    Route::post('/tables', [App\Http\Controllers\Admin\TableController::class, 'store'])->name('tables.store');
+    Route::post('/tables/settings', [App\Http\Controllers\Admin\TableController::class, 'updateSettings'])->name('tables.updateSettings');
+    Route::post('/tables/{id}/status', [App\Http\Controllers\Admin\TableController::class, 'updateStatus'])->name('tables.updateStatus');
+    Route::delete('/tables/{id}', [App\Http\Controllers\Admin\TableController::class, 'destroy'])->name('tables.destroy');
+    
     // Contact Messages
     Route::get('/contact-messages', [App\Http\Controllers\Admin\ContactMessageController::class, 'index'])->name('contact.messages.index');
     Route::post('/contact-messages/{id}/mark-read', [App\Http\Controllers\Admin\ContactMessageController::class, 'markAsRead'])->name('contact.messages.markRead');

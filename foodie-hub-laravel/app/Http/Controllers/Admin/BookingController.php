@@ -20,7 +20,9 @@ class BookingController extends Controller
                 ->orderBy('booking_time', 'desc')
                 ->get();
 
-            return view('admin.bookings.index', compact('bookings'));
+            $availableTables = \App\Models\RestaurantTable::where('status', 'available')->get();
+
+            return view('admin.bookings.index', compact('bookings', 'availableTables'));
         } catch (\Exception $e) {
             Log::error('Admin Bookings Index Error: ' . $e->getMessage());
             return back()->with('error', 'Unable to load bookings.');
@@ -35,6 +37,13 @@ class BookingController extends Controller
             // Handle table assignment
             if ($request->has('table_number')) {
                 $booking->update(['table_number' => $request->table_number]);
+                
+                // Also update table status to booked if assigned
+                $table = \App\Models\RestaurantTable::where('table_number', $request->table_number)->first();
+                if ($table) {
+                    $table->update(['status' => 'booked']);
+                }
+                
                 return back()->with('success', 'Table number assigned successfully.');
             }
 
@@ -42,6 +51,18 @@ class BookingController extends Controller
             if ($request->has('status')) {
                 $booking->update(['status' => $request->status]);
                 
+                // Update Table Status if table_number is assigned
+                if ($booking->table_number) {
+                    $table = \App\Models\RestaurantTable::where('table_number', $booking->table_number)->first();
+                    if ($table) {
+                        if ($request->status === 'confirmed') {
+                            $table->update(['status' => 'booked']);
+                        } elseif ($request->status === 'completed' || $request->status === 'cancelled') {
+                            $table->update(['status' => 'available']);
+                        }
+                    }
+                }
+
                 // Send email when confirmed
                 if ($request->status === 'confirmed') {
                     try {

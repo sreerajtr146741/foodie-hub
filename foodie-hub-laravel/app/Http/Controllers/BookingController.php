@@ -49,6 +49,17 @@ class BookingController extends Controller
             $validated['status'] = 'pending';
             $validated['window_side'] = $request->has('window_side');
 
+            // Check table availability for online bookings
+            $onlineTablesCount = \App\Models\RestaurantSetting::getValue('online_tables_count', 5);
+            $existingBookings = Booking::where('booking_date', $validated['booking_date'])
+                ->where('booking_time', $validated['booking_time'])
+                ->whereIn('status', ['pending', 'confirmed'])
+                ->count();
+
+            if ($existingBookings >= $onlineTablesCount) {
+                return back()->with('error', 'No tables available for ' . $validated['booking_date'] . ' at ' . $validated['booking_time'] . '. All online booking slots are full.')->withInput();
+            }
+
             // Create booking
             $booking = Booking::create($validated);
 
