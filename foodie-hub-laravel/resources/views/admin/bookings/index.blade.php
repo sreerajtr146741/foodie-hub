@@ -113,33 +113,104 @@
                             <tr x-show="expanded" x-collapse class="bg-orange-50">
                                 <td colspan="7" class="px-6 py-4">
                                     <div class="max-w-4xl">
-                                        <h4 class="text-sm font-semibold text-gray-900 mb-3">Food Pre-Orders (DINE-IN)</h4>
+                                        <div class="flex items-center justify-between mb-3 border-b pb-2">
+                                            <h4 class="text-sm font-semibold text-gray-900">Food Items & Billing</h4>
+                                            <div class="text-sm font-bold text-orange-600">
+                                                Current Total: ₹{{ $booking->foodOrders->sum(fn($o) => $o->food->price * $o->quantity) }}
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Quick Add Food Form -->
+                                        <div class="bg-blue-50 p-3 rounded mb-3 border border-blue-100">
+                                            <form method="POST" action="{{ route('admin.bookings.updateStatus', $booking->id) }}" class="flex items-end gap-2">
+                                                @csrf
+                                                @method('PATCH')
+                                                <div class="flex-1">
+                                                    <label class="block text-xs font-medium text-gray-700 mb-1">Add Food Item</label>
+                                                    <select name="add_food_id" required class="w-full text-xs border rounded p-1">
+                                                        <option value="">Select food...</option>
+                                                        @foreach($foods as $f)
+                                                            <option value="{{ $f->id }}">{{ $f->name }} - ₹{{ $f->price }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="w-16">
+                                                    <label class="block text-xs font-medium text-gray-700 mb-1">Qty</label>
+                                                    <input type="number" name="quantity" value="1" min="1" class="w-full text-xs border rounded p-1">
+                                                </div>
+                                                <button type="submit" class="bg-blue-600 text-white px-3 py-1 text-xs rounded hover:bg-blue-700">Add</button>
+                                            </form>
+                                        </div>
+
                                         <div class="space-y-2">
                                             @foreach($booking->foodOrders as $order)
                                                 <div class="flex items-center justify-between bg-white p-3 rounded border">
                                                     <div class="flex-1">
-                                                        <p class="text-sm font-medium text-gray-900">{{ $order->food->name }} × {{ $order->quantity }}</p>
+                                                        <div class="flex items-center gap-2">
+                                                            <p class="text-sm font-medium text-gray-900">{{ $order->food->name }} × {{ $order->quantity }}</p>
+                                                            <span class="text-xs font-bold text-gray-700">₹{{ $order->food->price * $order->quantity }}</span>
+                                                        </div>
                                                         <p class="text-xs text-gray-500">Price: ₹{{ $order->food->price }}</p>
                                                         @if($order->cooking_note)
                                                             <p class="text-xs text-orange-600 mt-1">📝 {{ $order->cooking_note }}</p>
                                                         @endif
                                                     </div>
-                                                    <form method="POST" action="{{ route('admin.bookings.updateStatus', $booking->id) }}">
-                                                        @csrf
-                                                        @method('PATCH')
-                                                        <input type="hidden" name="food_order_id" value="{{ $order->id }}">
-                                                        <select name="food_status" onchange="this.form.submit()" class="text-xs rounded px-2 py-1 border
-                                                            @if($order->food_status === 'waiting') bg-yellow-100 text-yellow-800
-                                                            @elseif($order->food_status === 'preparing') bg-blue-100 text-blue-800
-                                                            @else bg-green-100 text-green-800 @endif">
-                                                            <option value="waiting" @if($order->food_status === 'waiting') selected @endif>Waiting</option>
-                                                            <option value="preparing" @if($order->food_status === 'preparing') selected @endif>Preparing</option>
-                                                            <option value="served" @if($order->food_status === 'served') selected @endif>Served</option>
-                                                        </select>
-                                                    </form>
+                                                    <div class="flex items-center gap-2">
+                                                        <form method="POST" action="{{ route('admin.bookings.updateStatus', $booking->id) }}">
+                                                            @csrf
+                                                            @method('PATCH')
+                                                            <input type="hidden" name="food_order_id" value="{{ $order->id }}">
+                                                            <select name="food_status" onchange="this.form.submit()" class="text-xs rounded px-2 py-1 border
+                                                                @if($order->food_status === 'waiting') bg-yellow-100 text-yellow-800
+                                                                @elseif($order->food_status === 'preparing') bg-blue-100 text-blue-800
+                                                                @else bg-green-100 text-green-800 @endif">
+                                                                <option value="waiting" @if($order->food_status === 'waiting') selected @endif>Waiting</option>
+                                                                <option value="preparing" @if($order->food_status === 'preparing') selected @endif>Preparing</option>
+                                                                <option value="served" @if($order->food_status === 'served') selected @endif>Served</option>
+                                                            </select>
+                                                        </form>
+                                                        <form method="POST" action="{{ route('admin.bookings.updateStatus', $booking->id) }}" onsubmit="return confirm('Remove this item?');">
+                                                            @csrf
+                                                            @method('PATCH')
+                                                            <input type="hidden" name="remove_food_order_id" value="{{ $order->id }}">
+                                                            <button type="submit" class="text-red-500 hover:text-red-700">
+                                                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                                </svg>
+                                                            </button>
+                                                        </form>
+                                                    </div>
                                                 </div>
                                             @endforeach
                                         </div>
+                                        
+                                        <!-- Settlement Actions -->
+                                        @if($booking->status !== 'completed' && $booking->status !== 'cancelled')
+                                            <div class="mt-4 pt-4 border-t flex justify-end gap-3">
+                                                <form method="POST" action="{{ route('admin.bookings.updateStatus', $booking->id) }}" class="flex items-center gap-2">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <input type="hidden" name="settle_payment" value="1">
+                                                    <select name="payment_method" class="text-xs border rounded p-1">
+                                                        <option value="Cash">Cash</option>
+                                                        <option value="Card">Card</option>
+                                                        <option value="UPI">UPI</option>
+                                                    </select>
+                                                    <button type="submit" class="bg-green-600 text-white px-4 py-2 text-xs font-bold rounded hover:bg-green-700 shadow-sm flex items-center gap-1">
+                                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                        </svg>
+                                                        Finalize Payment & Complete
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        @elseif($booking->payment_status === 'paid')
+                                            <div class="mt-4 pt-4 border-t text-right">
+                                                <span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full font-bold">
+                                                    ✅ Paid ₹{{ $booking->total_amount }} via {{ $booking->payment_method }}
+                                                </span>
+                                            </div>
+                                        @endif
                                     </div>
                                 </td>
                             </tr>

@@ -21,8 +21,9 @@ class BookingController extends Controller
                 ->get();
 
             $availableTables = \App\Models\RestaurantTable::where('status', 'available')->get();
+            $foods = \App\Models\Food::where('is_available', 1)->get();
 
-            return view('admin.bookings.index', compact('bookings', 'availableTables'));
+            return view('admin.bookings.index', compact('bookings', 'availableTables', 'foods'));
         } catch (\Exception $e) {
             Log::error('Admin Bookings Index Error: ' . $e->getMessage());
             return back()->with('error', 'Unable to load bookings.');
@@ -89,6 +90,48 @@ class BookingController extends Controller
                 $foodOrder = BookingFoodOrder::findOrFail($request->food_order_id);
                 $foodOrder->update(['food_status' => $request->food_status]);
                 return back()->with('success', 'Food order status updated successfully.');
+            }
+
+            // Handle adding food item
+            if ($request->has('add_food_id') && $request->has('quantity')) {
+                BookingFoodOrder::create([
+                    'booking_id' => $booking->id,
+                    'food_id' => $request->add_food_id,
+                    'quantity' => $request->quantity,
+                    'food_status' => 'served', // Assuming served if added at shop
+                ]);
+                return back()->with('success', 'Food item added successfully.');
+            }
+
+            // Handle removing food item
+            if ($request->has('remove_food_order_id')) {
+                BookingFoodOrder::findOrFail($request->remove_food_order_id)->delete();
+                return back()->with('success', 'Food item removed successfully.');
+            }
+
+            // Handle payment settlement
+            if ($request->has('settle_payment')) {
+                $total = 0;
+                foreach($booking->foodOrders as $order) {
+                    $total += $order->food->price * $order->quantity;
+                }
+                
+                $booking->update([
+                    'total_amount' => $total,
+                    'payment_status' => 'paid',
+                    'payment_method' => $request->payment_method ?? 'Cash',
+                    'status' => 'completed'
+                ]);
+
+                // Update Table Status
+                if ($booking->table_number) {
+                    $table = \App\Models\RestaurantTable::where('table_number', $booking->table_number)->first();
+                    if ($table) {
+                        $table->update(['status' => 'available']);
+                    }
+                }
+
+                return back()->with('success', 'Payment settled and booking completed. Total: ₹' . $total);
             }
 
             // Handle admin notes
