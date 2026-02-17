@@ -82,6 +82,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Orders
     Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
     Route::patch('/orders/{order}', [AdminOrderController::class, 'updateStatus'])->name('orders.updateStatus');
+    Route::post('/orders/{order}/items', [AdminOrderController::class, 'addItem'])->name('orders.addItem');
+    Route::delete('/orders/{order}/items/{item}', [AdminOrderController::class, 'removeItem'])->name('orders.removeItem');
     
     
     // Bookings
