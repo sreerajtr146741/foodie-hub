@@ -72,22 +72,22 @@
                                 </form>
                             </td>
                             <td class="px-6 py-4">
-                                @if($booking->foodOrders->count() > 0)
-                                    <button @click="expanded = !expanded" class="text-sm text-orange-600 hover:text-orange-800 flex items-center">
-                                        <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                                        </svg>
-                                        {{ $booking->foodOrders->count() }} items
-                                    </button>
-                                @else
-                                    <span class="text-sm text-gray-400">No pre-order</span>
-                                @endif
+                                <button @click="expanded = !expanded" class="text-sm text-orange-600 hover:text-orange-800 flex items-center gap-1 group">
+                                    <svg class="h-4 w-4 transition-transform duration-200" :class="expanded ? 'rotate-90' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                    </svg>
+                                    @if($booking->foodOrders->count() > 0)
+                                        <span class="font-medium">{{ $booking->foodOrders->count() }} items</span>
+                                    @else
+                                        <span class="text-gray-400 group-hover:text-orange-600">Add food</span>
+                                    @endif
+                                </button>
                             </td>
                             <td class="px-6 py-4">
                                 <form method="POST" action="{{ route('admin.bookings.updateStatus', $booking->id) }}">
                                     @csrf
                                     @method('PATCH')
-                                    <select name="status" onchange="this.form.submit()" class="text-sm rounded px-2 py-1 border
+                                    <select name="status" onchange="this.form.submit()" class="text-sm rounded-full px-3 py-1 border font-medium
                                         @if($booking->status === 'pending') bg-yellow-100 text-yellow-800 border-yellow-300
                                         @elseif($booking->status === 'confirmed') bg-green-100 text-green-800 border-green-300
                                         @elseif($booking->status === 'cancelled') bg-red-100 text-red-800 border-red-300
@@ -103,67 +103,81 @@
                                 <form method="POST" action="{{ route('admin.bookings.destroy', $booking->id) }}" onsubmit="return confirm('Delete this booking?');">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="text-red-600 hover:text-red-800 text-sm">Delete</button>
+                                    <button type="submit" class="text-red-400 hover:text-red-600 transition">
+                                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                    </button>
                                 </form>
                             </td>
                         </tr>
                         
-                        <!-- Expanded Row for Food Orders -->
-                        @if($booking->foodOrders->count() > 0)
-                            <tr x-show="expanded" x-collapse class="bg-orange-50">
-                                <td colspan="7" class="px-6 py-4">
-                                    <div class="max-w-4xl">
-                                        <div class="flex items-center justify-between mb-3 border-b pb-2">
-                                            <h4 class="text-sm font-semibold text-gray-900">Food Items & Billing</h4>
-                                            <div class="text-sm font-bold text-orange-600">
-                                                Current Total: ₹{{ $booking->foodOrders->sum(fn($o) => $o->food->price * $o->quantity) }}
+                        <!-- Combined Expanded Row -->
+                        <tr x-show="expanded" x-collapse class="bg-gray-50">
+                            <td colspan="7" class="px-6 py-8 border-t border-gray-100">
+                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                                    <!-- Left: Food & Billing -->
+                                    <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+                                        <div class="flex items-center justify-between mb-5 border-b pb-3">
+                                            <h4 class="text-sm font-bold text-gray-900 flex items-center gap-2">
+                                                <span class="p-1.5 bg-orange-100 rounded-lg text-orange-600">
+                                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                                    </svg>
+                                                </span>
+                                                Food Items & Billing
+                                            </h4>
+                                            <div class="text-base font-black text-orange-600">
+                                                Total: ₹{{ number_format($booking->foodOrders->sum(fn($o) => $o->food->price * $o->quantity), 2) }}
                                             </div>
                                         </div>
-                                        
-                                        <!-- Quick Add Food Form -->
-                                        <div class="bg-blue-50 p-3 rounded mb-3 border border-blue-100">
-                                            <form method="POST" action="{{ route('admin.bookings.updateStatus', $booking->id) }}" class="flex items-end gap-2">
+
+                                        <!-- Add Food Form -->
+                                        <div class="bg-blue-50/50 p-4 rounded-xl mb-6 border border-blue-100/50">
+                                            <form method="POST" action="{{ route('admin.bookings.updateStatus', $booking->id) }}" class="flex items-end gap-3">
                                                 @csrf
                                                 @method('PATCH')
                                                 <div class="flex-1">
-                                                    <label class="block text-xs font-medium text-gray-700 mb-1">Add Food Item</label>
-                                                    <select name="add_food_id" required class="w-full text-xs border rounded p-1">
-                                                        <option value="">Select food...</option>
+                                                    <label class="block text-xs font-bold text-gray-700 mb-1.5 uppercase tracking-wider">Add Item</label>
+                                                    <select name="add_food_id" required class="w-full text-sm border-gray-200 rounded-lg p-2 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition outline-none">
+                                                        <option value="">Select food item...</option>
                                                         @foreach($foods as $f)
-                                                            <option value="{{ $f->id }}">{{ $f->name }} - ₹{{ $f->price }}</option>
+                                                            <option value="{{ $f->id }}">{{ $f->name }} - ₹{{ number_format($f->price, 2) }}</option>
                                                         @endforeach
                                                     </select>
                                                 </div>
-                                                <div class="w-16">
-                                                    <label class="block text-xs font-medium text-gray-700 mb-1">Qty</label>
-                                                    <input type="number" name="quantity" value="1" min="1" class="w-full text-xs border rounded p-1">
+                                                <div class="w-20">
+                                                    <label class="block text-xs font-bold text-gray-700 mb-1.5 uppercase tracking-wider">Qty</label>
+                                                    <input type="number" name="quantity" value="1" min="1" class="w-full text-sm border-gray-200 rounded-lg p-2 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition outline-none">
                                                 </div>
-                                                <button type="submit" class="bg-blue-600 text-white px-3 py-1 text-xs rounded hover:bg-blue-700">Add</button>
+                                                <button type="submit" class="bg-blue-600 text-white px-5 py-2 text-sm font-bold rounded-lg hover:bg-blue-700 transition shadow-sm hover:shadow-md active:scale-95">Add</button>
                                             </form>
                                         </div>
 
-                                        <div class="space-y-2">
-                                            @foreach($booking->foodOrders as $order)
-                                                <div class="flex items-center justify-between bg-white p-3 rounded border">
+                                        <div class="space-y-3 max-h-80 overflow-y-auto pr-2 custom-scrollbar">
+                                            @forelse($booking->foodOrders as $order)
+                                                <div class="flex items-center justify-between bg-white p-4 rounded-xl border border-gray-100 hover:border-orange-200 hover:shadow-sm transition-all group">
                                                     <div class="flex-1">
-                                                        <div class="flex items-center gap-2">
-                                                            <p class="text-sm font-medium text-gray-900">{{ $order->food->name }} × {{ $order->quantity }}</p>
-                                                            <span class="text-xs font-bold text-gray-700">₹{{ $order->food->price * $order->quantity }}</span>
+                                                        <div class="flex items-center gap-3">
+                                                            <p class="text-sm font-bold text-gray-900">{{ $order->food->name }} <span class="text-gray-400 font-normal">×</span> {{ $order->quantity }}</p>
+                                                            <span class="text-xs font-black px-2 py-0.5 bg-gray-100 rounded text-gray-700">₹{{ number_format($order->food->price * $order->quantity, 2) }}</span>
                                                         </div>
-                                                        <p class="text-xs text-gray-500">Price: ₹{{ $order->food->price }}</p>
+                                                        <p class="text-xs text-gray-500 mt-1">Unit Price: ₹{{ number_format($order->food->price, 2) }}</p>
                                                         @if($order->cooking_note)
-                                                            <p class="text-xs text-orange-600 mt-1">📝 {{ $order->cooking_note }}</p>
+                                                            <div class="mt-2 text-[10px] text-orange-600 bg-orange-50 px-2 py-1 rounded-md inline-block">
+                                                                📝 {{ $order->cooking_note }}
+                                                            </div>
                                                         @endif
                                                     </div>
-                                                    <div class="flex items-center gap-2">
+                                                    <div class="flex items-center gap-3">
                                                         <form method="POST" action="{{ route('admin.bookings.updateStatus', $booking->id) }}">
                                                             @csrf
                                                             @method('PATCH')
                                                             <input type="hidden" name="food_order_id" value="{{ $order->id }}">
-                                                            <select name="food_status" onchange="this.form.submit()" class="text-xs rounded px-2 py-1 border
-                                                                @if($order->food_status === 'waiting') bg-yellow-100 text-yellow-800
-                                                                @elseif($order->food_status === 'preparing') bg-blue-100 text-blue-800
-                                                                @else bg-green-100 text-green-800 @endif">
+                                                            <select name="food_status" onchange="this.form.submit()" class="text-[10px] uppercase font-bold rounded-lg px-2 py-1 border transition-colors
+                                                                @if($order->food_status === 'waiting') bg-yellow-50 text-yellow-700 border-yellow-200
+                                                                @elseif($order->food_status === 'preparing') bg-blue-50 text-blue-700 border-blue-200
+                                                                @else bg-green-50 text-green-700 border-green-200 @endif">
                                                                 <option value="waiting" @if($order->food_status === 'waiting') selected @endif>Waiting</option>
                                                                 <option value="preparing" @if($order->food_status === 'preparing') selected @endif>Preparing</option>
                                                                 <option value="served" @if($order->food_status === 'served') selected @endif>Served</option>
@@ -173,7 +187,7 @@
                                                             @csrf
                                                             @method('PATCH')
                                                             <input type="hidden" name="remove_food_order_id" value="{{ $order->id }}">
-                                                            <button type="submit" class="text-red-500 hover:text-red-700">
+                                                            <button type="submit" class="text-gray-300 hover:text-red-500 transition-colors">
                                                                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                                                 </svg>
@@ -181,79 +195,114 @@
                                                         </form>
                                                     </div>
                                                 </div>
-                                            @endforeach
+                                            @empty
+                                                <div class="flex flex-col items-center justify-center py-10 text-gray-400 bg-gray-50/50 rounded-xl border border-dashed">
+                                                    <svg class="h-8 w-8 mb-2 opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                                    </svg>
+                                                    <p class="text-sm italic">No items ordered yet.</p>
+                                                </div>
+                                            @endforelse
                                         </div>
-                                        
-                                        <!-- Settlement Actions -->
+
+                                        <!-- Settlement -->
                                         @if($booking->status !== 'completed' && $booking->status !== 'cancelled')
-                                            <div class="mt-4 pt-4 border-t flex justify-end gap-3">
-                                                <form method="POST" action="{{ route('admin.bookings.updateStatus', $booking->id) }}" class="flex items-center gap-2">
+                                            <div class="mt-8 pt-6 border-t flex flex-col sm:flex-row items-center justify-between gap-4">
+                                                <div class="text-xs text-gray-400 font-medium italic">Finalize the order to complete booking</div>
+                                                <form method="POST" action="{{ route('admin.bookings.updateStatus', $booking->id) }}" class="flex items-center gap-3">
                                                     @csrf
                                                     @method('PATCH')
                                                     <input type="hidden" name="settle_payment" value="1">
-                                                    <select name="payment_method" class="text-xs border rounded p-1">
-                                                        <option value="Cash">Cash</option>
-                                                        <option value="Card">Card</option>
-                                                        <option value="UPI">UPI</option>
-                                                    </select>
-                                                    <button type="submit" class="bg-green-600 text-white px-4 py-2 text-xs font-bold rounded hover:bg-green-700 shadow-sm flex items-center gap-1">
+                                                    <div class="relative">
+                                                        <select name="payment_method" class="text-xs font-bold border-gray-200 rounded-lg px-3 py-2 bg-white focus:ring-2 focus:ring-green-500/20 focus:border-green-500 outline-none appearance-none pr-8">
+                                                            <option value="Cash">CASH</option>
+                                                            <option value="Card">CARD</option>
+                                                            <option value="UPI">UPI</option>
+                                                        </select>
+                                                        <div class="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                                                            <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                        </div>
+                                                    </div>
+                                                    <button type="submit" class="bg-green-600 text-white px-5 py-2 text-xs font-black rounded-lg hover:bg-green-700 shadow-sm hover:shadow-green-200 transition-all flex items-center gap-2 active:scale-95">
                                                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                         </svg>
-                                                        Finalize Payment & Complete
+                                                        SETTLE & COMPLETE
                                                     </button>
                                                 </form>
                                             </div>
                                         @elseif($booking->payment_status === 'paid')
-                                            <div class="mt-4 pt-4 border-t text-right">
-                                                <span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full font-bold">
-                                                    ✅ Paid ₹{{ $booking->total_amount }} via {{ $booking->payment_method }}
-                                                </span>
+                                            <div class="mt-6 pt-6 border-t flex justify-end">
+                                                <div class="inline-flex items-center gap-2 px-4 py-2 bg-green-50 text-green-700 border border-green-100 rounded-xl">
+                                                    <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                                                    <span class="text-xs font-black uppercase tracking-widest">PAID ₹{{ number_format($booking->total_amount, 2) }} via {{ $booking->payment_method }}</span>
+                                                </div>
                                             </div>
                                         @endif
                                     </div>
-                                </td>
-                            </tr>
-                        @endif
 
-                        <!-- Preferences & Notes -->
-                        <tr x-show="expanded" x-collapse class="bg-gray-50">
-                            <td colspan="7" class="px-6 py-4">
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <h5 class="text-xs font-semibold text-gray-700 mb-2">Preferences:</h5>
-                                        @if($booking->table_type || $booking->seating_preference || $booking->window_side)
-                                            <div class="flex flex-wrap gap-1">
-                                                @if($booking->table_type)
-                                                    <span class="px-2 py-1 text-xs bg-white rounded">{{ ucfirst($booking->table_type) }}</span>
-                                                @endif
-                                                @if($booking->seating_preference)
-                                                    <span class="px-2 py-1 text-xs bg-white rounded">{{ strtoupper($booking->seating_preference) }}</span>
-                                                @endif
-                                                @if($booking->window_side)
-                                                    <span class="px-2 py-1 text-xs bg-white rounded">Window</span>
-                                                @endif
+                                    <!-- Right: Preferences & Notes -->
+                                    <div class="space-y-6">
+                                        <!-- Preferences card -->
+                                        <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+                                            <h4 class="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
+                                                <span class="p-1.5 bg-blue-100 rounded-lg text-blue-600">
+                                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                                                    </svg>
+                                                </span>
+                                                Customer Request Details
+                                            </h4>
+                                            
+                                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
+                                                <div class="p-3 bg-gray-50 rounded-lg">
+                                                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-tighter mb-1">Seating Pref</p>
+                                                    <p class="text-sm font-semibold text-gray-700">{{ $booking->seating_preference ? strtoupper($booking->seating_preference) : 'NOT SPECIFIED' }}</p>
+                                                </div>
+                                                <div class="p-3 bg-gray-50 rounded-lg">
+                                                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-tighter mb-1">Table Type</p>
+                                                    <p class="text-sm font-semibold text-gray-700">{{ $booking->table_type ? ucfirst($booking->table_type) : 'STANDARD' }}</p>
+                                                </div>
+                                                <div class="p-3 bg-gray-50 rounded-lg">
+                                                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-tighter mb-1">Window Side</p>
+                                                    <p class="text-sm font-semibold text-gray-700">{{ $booking->window_side ? 'YES' : 'NO' }}</p>
+                                                </div>
+                                                <div class="p-3 bg-gray-50 rounded-lg">
+                                                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-tighter mb-1">Occasion</p>
+                                                    <p class="text-sm font-semibold text-gray-700">{{ $booking->occasion ? ucfirst($booking->occasion) : 'NONE' }}</p>
+                                                </div>
                                             </div>
-                                        @else
-                                            <p class="text-xs text-gray-500">No preferences</p>
-                                        @endif
-                                        
-                                        @if($booking->occasion)
-                                            <p class="text-xs text-gray-600 mt-2"><strong>Occasion:</strong> {{ ucfirst($booking->occasion) }}</p>
-                                        @endif
-                                        
-                                        @if($booking->special_requests)
-                                            <p class="text-xs text-gray-600 mt-2"><strong>Special Requests:</strong> {{ $booking->special_requests }}</p>
-                                        @endif
-                                    </div>
-                                    <div>
-                                        <h5 class="text-xs font-semibold text-gray-700 mb-2">Admin Notes:</h5>
-                                        <form method="POST" action="{{ route('admin.bookings.updateStatus', $booking->id) }}">
-                                            @csrf
-                                            @method('PATCH')
-                                            <textarea name="admin_notes" rows="3" class="w-full text-xs border rounded p-2" placeholder="Add notes...">{{ $booking->admin_notes }}</textarea>
-                                            <button type="submit" class="mt-1 text-xs bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700">Save Notes</button>
-                                        </form>
+
+                                            @if($booking->special_requests)
+                                                <div class="p-4 bg-orange-50/30 border border-orange-100 rounded-xl">
+                                                    <p class="text-xs font-bold text-orange-800 mb-1 flex items-center gap-1">
+                                                        <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20"><path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM5.884 6.643a1 1 0 10-1.414-1.414l.707-.707a1 1 0 001.414 1.414l-.707.707zM18 10a1 1 0 11-2 0h-1a1 1 0 112 0h1zM5.05 13.05a1 1 0 10-1.414 1.414l.707.707a1 1 0 101.414-1.414l-.707-.707zM10 18a1 1 0 100-2v-1a1 1 0 100 2v1zM14.95 13.05a1 1 0 101.414 1.414l-.707.707a1 1 0 10-1.414-1.414l.707-.707zM18 10a1 1 0 11-2 0h-1a1 1 0 112 0h1zM14.116 6.643a1 1 0 111.414-1.414l-.707-.707a1 1 0 11-1.414 1.414l.707.707z"/></svg>
+                                                        Special Requests:
+                                                    </p>
+                                                    <p class="text-sm text-gray-600 italic leading-relaxed">"{{ $booking->special_requests }}"</p>
+                                                </div>
+                                            @endif
+                                        </div>
+
+                                        <!-- Notes card -->
+                                        <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+                                            <h4 class="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
+                                                <span class="p-1.5 bg-purple-100 rounded-lg text-purple-600">
+                                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                                    </svg>
+                                                </span>
+                                                Internal Admin Notes
+                                            </h4>
+                                            <form method="POST" action="{{ route('admin.bookings.updateStatus', $booking->id) }}">
+                                                @csrf
+                                                @method('PATCH')
+                                                <textarea name="admin_notes" rows="4" class="w-full text-sm border-gray-200 rounded-xl p-4 focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none transition-all placeholder:text-gray-300" placeholder="Write private notes about this customer or booking here...">{{ $booking->admin_notes }}</textarea>
+                                                <div class="flex justify-end mt-3">
+                                                    <button type="submit" class="bg-gray-900 text-white px-6 py-2 rounded-lg hover:bg-black transition font-bold text-xs uppercase tracking-widest active:scale-95 shadow-sm">Save Notes</button>
+                                                </div>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
                             </td>
